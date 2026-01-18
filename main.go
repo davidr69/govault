@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+
+	"github.com/hashicorp/vault/api"
 )
 
 const banner = `
