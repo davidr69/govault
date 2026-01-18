@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"govault.lavacro.net/models"
-	"govault.lavacro.net/vault"
+	"govault.lavacro.net/service"
 )
 
 const banner = `
@@ -33,12 +33,11 @@ func main() {
 
 	req.RoleId = os.Getenv("VAULT_ROLE_ID")
 	req.RoleSecret = os.Getenv("VAULT_ROLE_SECRET")
-	req.Endpoint = os.Getenv("VAULT_URI")
 	jsonReq = os.Getenv("VAULT_REQUEST")
 
 	fmt.Println(jsonReq)
 
-	if req.RoleId == "" || req.RoleSecret == "" || jsonReq == "" || req.Endpoint == "" {
+	if req.RoleId == "" || req.RoleSecret == "" || jsonReq == "" {
 		slog.Error("Missing required environment variables")
 		return
 	}
@@ -50,5 +49,5 @@ func main() {
 	}
 
 	fmt.Println(req)
-	vault.NewVaultClientFromEnv(req)
+	service.NewVaultClientFromEnv(req)
 }
