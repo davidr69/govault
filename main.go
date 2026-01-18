@@ -1,21 +1,29 @@
 package main
 
 import (
-	"flag"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
 
-	"github.com/hashicorp/vault/api"
+	"govault.lavacro.net/models"
 )
 
 const banner = `
-banner here
+                                                       {__  {__  
+                                                       {__  {__  
+   {__      {__          {__     {__   {__    {__  {__ {__{_{_ {_
+ {__  {__ {__  {__ {_____ {__   {__  {__  {__ {__  {__ {__  {__  
+{__   {__{__    {__        {__ {__  {__   {__ {__  {__ {__  {__  
+ {__  {__ {__  {__          {_{__   {__   {__ {__  {__ {__  {__  
+     {__    {__              {__      {__ {___  {__{__{___   {__ 
+  {__                                                            
 `
 
-type Config struct {
-	ServiceAcctUser   string
-	ServiceAcctSecret string
+type vaultRequest struct {
+	roleId     string
+	roleSecret string
+	params     *models.VaultRequest
 }
 
 func main() {
@@ -25,9 +33,21 @@ func main() {
 		AddSource: true,
 	})))
 
-	var cfg Config
+	var req vaultRequest
+	var jsonReq string
 
-	flag.StringVar(&cfg.ServiceAcctUser, "service-acct-user", "", "Service account username")
-	flag.StringVar(&cfg.ServiceAcctSecret, "service-acct-secret", "", "Service account secret")
-	flag.Parse()
+	req.roleId = os.Getenv("VAULT_ROLE_ID")
+	req.roleSecret = os.Getenv("VAULT_ROLE_SECRET")
+	jsonReq = os.Getenv("VAULT_REQUEST")
+
+	if req.roleId == "" || req.roleSecret == "" || jsonReq == "" {
+		slog.Error("Missing required environment variables")
+		return
+	}
+
+	err := json.Unmarshal([]byte(jsonReq), &models.VaultRequest{})
+	if err != nil {
+		slog.Error("Error unmarshalling JSON request", "error", err)
+		return
+	}
 }
