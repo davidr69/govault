@@ -48,6 +48,6 @@ func main() {
 		return
 	}
 
-	fmt.Println(req)
+	slog.Info("Request", "request", req)
 	service.NewVaultClientFromEnv(req)
 }

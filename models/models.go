@@ -14,11 +14,12 @@ type Item struct {
 type VaultRequest struct {
 	Path  string `json:"path"`
 	Items []Item `json:"items"`
+	Mount string `json:"mount"`
 }
 
 type VaultConfig struct {
 	VaultRequest []VaultRequest `json:"vault_request"`
-	MountPath    string         `json:"mount_path"`
+	FilePath     string         `json:"file_path"`
 }
 
 /*
