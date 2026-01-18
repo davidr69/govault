@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"govault.lavacro.net/models"
+	"govault.lavacro.net/vault"
 )
 
 const banner = `
@@ -20,12 +21,6 @@ const banner = `
   {__                                                            
 `
 
-type vaultRequest struct {
-	roleId     string
-	roleSecret string
-	params     *models.VaultRequest
-}
-
 func main() {
 	fmt.Print(banner)
 
@@ -33,21 +28,27 @@ func main() {
 		AddSource: true,
 	})))
 
-	var req vaultRequest
+	var req models.AppConfig
 	var jsonReq string
 
-	req.roleId = os.Getenv("VAULT_ROLE_ID")
-	req.roleSecret = os.Getenv("VAULT_ROLE_SECRET")
+	req.RoleId = os.Getenv("VAULT_ROLE_ID")
+	req.RoleSecret = os.Getenv("VAULT_ROLE_SECRET")
+	req.Endpoint = os.Getenv("VAULT_URI")
 	jsonReq = os.Getenv("VAULT_REQUEST")
 
-	if req.roleId == "" || req.roleSecret == "" || jsonReq == "" {
+	fmt.Println(jsonReq)
+
+	if req.RoleId == "" || req.RoleSecret == "" || jsonReq == "" || req.Endpoint == "" {
 		slog.Error("Missing required environment variables")
 		return
 	}
 
-	err := json.Unmarshal([]byte(jsonReq), &models.VaultRequest{})
+	err := json.Unmarshal([]byte(jsonReq), &req.Params)
 	if err != nil {
 		slog.Error("Error unmarshalling JSON request", "error", err)
 		return
 	}
+
+	fmt.Println(req)
+	vault.NewVaultClientFromEnv(req)
 }

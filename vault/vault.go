@@ -2,16 +2,16 @@ package vault
 
 import (
 	"log/slog"
-	"os"
 
 	"github.com/hashicorp/vault/api"
+	"govault.lavacro.net/models"
 )
 
 type VaultClient struct {
 	client *api.Client
 }
 
-func NewVaultClientFromEnv() (*VaultClient, error) {
+func NewVaultClientFromEnv(req models.AppConfig) (*VaultClient, error) {
 	slog.Info("foo")
 	cfg := api.DefaultConfig()
 	client, err := api.NewClient(cfg)
@@ -19,14 +19,11 @@ func NewVaultClientFromEnv() (*VaultClient, error) {
 		return nil, err
 	}
 
-	roleID := os.Getenv("VAULT_ROLE_ID")
-	secretID := os.Getenv("VAULT_SECRET_ID")
-
 	secret, err := client.Logical().Write(
 		"auth/approle/login",
 		map[string]interface{}{
-			"role_id":   roleID,
-			"secret_id": secretID,
+			"role_id":   req.RoleId,
+			"secret_id": req.RoleSecret,
 		},
 	)
 	if err != nil {

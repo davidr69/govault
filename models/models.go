@@ -1,5 +1,12 @@
 package models
 
+type AppConfig struct {
+	RoleId     string
+	RoleSecret string
+	Endpoint   string
+	Params     VaultConfig
+}
+
 type Item struct {
 	Key   string `json:"key"`
 	Label string `json:"label"`
