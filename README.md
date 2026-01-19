@@ -28,20 +28,20 @@ VAULT_REQUEST
     }]
   },{
     "mount": "lavacro",
-    "path": "lavacro/prod/gcl",
+    "path": "prod/gcl",
     "items": [{
       "key": "authentication",
       "label": "google.cloud.logging"
     }]
   },{
     "mount": "lavacro",
-    "path": "lavacro/prod/github",
+    "path": "prod/github",
     "items": [{
       "key": "token",
       "label": "github.token"
     }]
   }],
-  "mount_path": "/var/tmp/vault/vault.properties"
+  "file_path": "/var/tmp/vault/vault.properties"
 }
 ```
 
