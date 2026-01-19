@@ -9,3 +9,40 @@ https://pkg.go.dev/github.com/hashicorp/vault/api
 
 
 set VAULT_ADDR
+
+
+VAULT_ROLE_ID
+
+VAULT_ROLE_SECRET
+
+VAULT_REQUEST
+
+```json
+{
+  "vault_request": [{
+    "mount": "lavacro",
+    "path": "prod/database/postgresql",
+    "items": [{
+      "key": "password",
+      "label": "spring.datasource.password"
+    }]
+  },{
+    "mount": "lavacro",
+    "path": "lavacro/prod/gcl",
+    "items": [{
+      "key": "authentication",
+      "label": "google.cloud.logging"
+    }]
+  },{
+    "mount": "lavacro",
+    "path": "lavacro/prod/github",
+    "items": [{
+      "key": "token",
+      "label": "github.token"
+    }]
+  }],
+  "mount_path": "/var/tmp/vault/vault.properties"
+}
+```
+
+![go-vault](images/go-vault.png)
