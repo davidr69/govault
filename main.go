@@ -49,7 +49,7 @@ func main() {
 	}
 
 	slog.Info("Request", "request", req)
-	err = service.NewVaultClientFromEnv(req)
+	err = service.WritePropertiesFile(req)
 	if err != nil {
 		slog.Error("Error creating Vault client", "error", err)
 	}
