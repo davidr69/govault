@@ -32,8 +32,8 @@ specified separately from the path and avoid adding `data`.
 `govault` requires three environment variables to be set:
 
 1. VAULT_ROLE_ID: the role ID for the AppRole authentication method
-1. VAULT_ROLE_SECRET: the secret ID for the AppRole authentication method
-1. VAULT_REQUEST: a JSON document specifying what secrets to retrieve
+2. VAULT_ROLE_SECRET: the secret ID for the AppRole authentication method
+3. VAULT_REQUEST: a JSON document specifying what secrets to retrieve
    and where to write them. For example:
 
 ```json
@@ -68,3 +68,23 @@ The Go Vault client library looks for the `VAULT_ADDR` environment variable,
 which is the Vault endpoint URI.
 
 ![go-vault](images/go-vault.png)
+
+You would then leverage the values of the secrets and the config map in the
+init container:
+
+```yaml
+initContainers:
+- name: vault-retrieve
+  image: "registry:5000/govault:1.0.0"
+  imagePullPolicy: IfNotPresent
+  envFrom:
+  - configMapRef:
+      name: serverless-config-init
+  - secretRef:
+      name: serverless-secrets
+```
+
+If the “main” container contains a Spring Boot application, you could
+simply read the properties file with `SPRING_CONFIG_ADDITIONAL_LOCATION`.
+For other languages, it would be a matter of parsing the properties file,
+which is a simple name/value format.

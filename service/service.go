@@ -10,11 +10,7 @@ import (
 	vault "github.com/hashicorp/vault/api"
 )
 
-type VaultClient struct {
-	client *vault.Client
-}
-
-func NewVaultClientFromEnv(req models.AppConfig) error {
+func WritePropertiesFile(req models.AppConfig) error {
 	cfg := vault.DefaultConfig()
 	client, err := vault.NewClient(cfg)
 	if err != nil {
@@ -35,7 +31,7 @@ func NewVaultClientFromEnv(req models.AppConfig) error {
 	slog.Info("Logged into vault")
 	client.SetToken(secret.Auth.ClientToken)
 
-	// create file that will contain secrets
+	// create a file that will contain secrets
 	h, err := os.Create(req.Params.FilePath)
 	if err != nil {
 		slog.Error("Failed to open file path: ", "error", err)
