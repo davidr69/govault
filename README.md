@@ -13,10 +13,10 @@ retrieve secrets from Vault and write them to a file.
 
 ## Design
 
-`govault` is based on an example provided in the official documentation:
-https://pkg.go.dev/github.com/hashicorp/vault/api. `govault` leverages
-the KV2 secrets engine and the AppRole authentication method, meaning
-that rather than using a long-lived token, `govault` uses a Role ID and
+`govault` is based on an example provided in the
+[official documentation](https://pkg.go.dev/github.com/hashicorp/vault/api).
+`govault` leverages the KV2 secrets engine and the AppRole authentication method,
+meaning that rather than using a long-lived token, `govault` uses a Role ID and
 a Secret ID to authenticate to Vault, receiving a short-lived token which
 is then used to retrieve secrets.
 
