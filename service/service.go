@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"time"
 
 	"govault.lavacro.net/models"
 
@@ -12,6 +13,7 @@ import (
 
 func WritePropertiesFile(req models.AppConfig) error {
 	cfg := vault.DefaultConfig()
+	cfg.Timeout = 60 * time.Second
 	client, err := vault.NewClient(cfg)
 	if err != nil {
 		return err
@@ -49,7 +51,10 @@ func WritePropertiesFile(req models.AppConfig) error {
 		for itemIdx := range reqItem.Items {
 			item := reqItem.Items[itemIdx]
 			slog.Info("Retrieve ", item.Key, item.Label)
-			cred, err := client.KVv2(mount).Get(context.Background(), path)
+
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			cred, err := client.KVv2(mount).Get(ctx, path)
 			if err != nil {
 				slog.Error("Failed to get secret from vault: ", "error", err)
 				continue
