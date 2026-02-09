@@ -13,13 +13,19 @@ import (
 
 func WritePropertiesFile(req models.AppConfig) error {
 	cfg := vault.DefaultConfig()
-	cfg.Timeout = 60 * time.Second
+	// Increase timeout to account for network latency during bootup
+	cfg.Timeout = 120 * time.Second
 	client, err := vault.NewClient(cfg)
 	if err != nil {
 		return err
 	}
 
-	secret, err := client.Logical().Write(
+	// Add context with timeout to the login operation
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	secret, err := client.Logical().WriteWithContext(
+		ctx,
 		"auth/approle/login",
 		map[string]interface{}{
 			"role_id":   req.RoleId,
@@ -52,9 +58,9 @@ func WritePropertiesFile(req models.AppConfig) error {
 			item := reqItem.Items[itemIdx]
 			slog.Info("Retrieve ", item.Key, item.Label)
 
-			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-			defer cancel()
+			ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 			cred, err := client.KVv2(mount).Get(ctx, path)
+			cancel()
 			if err != nil {
 				slog.Error("Failed to get secret from vault: ", "error", err)
 				continue
